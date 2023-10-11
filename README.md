@@ -15,4 +15,4 @@ similar
 - 
 
 used by
-- [pip-qt](https://github.com/hannesdelbeke/pip-qt)https://github.com/hannesdelbeke/pip-qt
+- [pip-qt](https://github.com/hannesdelbeke/pip-qt)
