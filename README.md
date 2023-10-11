@@ -17,6 +17,17 @@ import py_pip
 py_pip.install("numpy")
 ```
 
+### use case
+Blender doesn't has an external Python interpreter.   
+To use pip and have it correctly detect the installed modules:
+- you need to run it from inside Blender.
+- or recreate the environment, with same Python version and Python paths.
+
+Else you might install a module that is already by default installed in Blender, because pip failed to detect it.  
+This can result in clashes and weird bugs.  
+
+This might (untested) also be achievable by passing `sys.path` to `os.environ["PYTHONPATH"]` and then running one of the below "similar" pip wrappers
+
 ### similar
 Python pip wrappers, but without passing EnvPaths.
 
