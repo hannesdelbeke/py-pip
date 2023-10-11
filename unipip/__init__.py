@@ -5,7 +5,9 @@ import os
 import pkg_resources  # todo replace deprecated module
 
 
-default_target_path = None
+default_target_path = ""
+
+_cached_installed_packages = []
 
 
 def run_command(command):
@@ -23,7 +25,7 @@ def run_command(command):
     return output, error
 
 
-def list_packages():
+def list():
     """return tuple of (name, version) for each installed package"""
     output, error = run_command([sys.executable, "-m", "pip", "list"])
 
@@ -31,28 +33,38 @@ def list_packages():
     packages = []
     raw = output.decode()
 
-    for line in raw.split("\n")[2:-1]:
-        name, version = line.split()
+    for line in raw.split("\n")[2:-1]:  # 2-1 skips the first lines
+        name, version = line.split()[:2]  # TODO edit packages contain a 3rd value: path 
         packages.append((name, version))
+
+    global __cached_installed_packages
+    __cached_installed_packages = packages
     return packages
 
 
-def get_version(package_name) -> str:
-    """Return installed package version or empty string"""
-    packages = list_packages()
+def get_version(package_name, cached=False) -> str:
+    """
+    Return installed package version or empty string
+    use_cached: requires running list before use. speed up get_version since pip list is slow
+    """
+    if cached:
+        global __cached_installed_packages
+        packages = __cached_installed_packages
+    else:
+        packages = list()
     for name, version in packages:
         if name == package_name:
             return version
     return ""
 
 
-def get_location(package_name) -> str:
-    output, error = run_command([sys.executable, "-m", "pip", "show", package_name])
-    raw = output.decode()
-    for line in raw.split("\n"):
-        if line.startswith("Location:"):
-            return line.split(" ")[1]
-    return ""
+# def get_location(package_name) -> str:
+#     output, error = run_command([sys.executable, "-m", "pip", "show", package_name])
+#     raw = output.decode()
+#     for line in raw.split("\n"):
+#         if line.startswith("Location:"):
+#             return line.split(" ")[1]
+#     return ""
 
 
 def get_location(package_name) -> str:
@@ -79,7 +91,7 @@ def get_location(package_name) -> str:
         return f"Error while trying to locate package '{package_name}'."
 
 
-def install_package(package_name, invalidate_caches=True, target_path=None):
+def install(package_name, invalidate_caches=True, target_path=None):
     """
     target_path: path where to install module too, if default_target_path is set, use that
     """
@@ -87,8 +99,16 @@ def install_package(package_name, invalidate_caches=True, target_path=None):
     target_path = target_path or default_target_path
     
     if target_path:
-        command.extend(["--target", target_path])
+        command.extend(["--target", str(target_path)])
     output, error = run_command(command)
+
+    # TODO if editable install, we add a pth file to target path.
+    # but target path might not be in site_packages, and pth might not be processed.
+    # if target_path:
+    #     import site
+    #     site.addsitedir(pth_path)
+    #     site.removeduppaths()
+
     if invalidate_caches:
         import importlib
         importlib.invalidate_caches()
