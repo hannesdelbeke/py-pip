@@ -1,4 +1,4 @@
-# unipip
+# pypip
 A Python wrapper for `pip.exe` that passes env vars to pip.
 Install packages from inside Python.
 
