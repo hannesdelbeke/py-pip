@@ -13,3 +13,6 @@ similar
 - https://github.com/aescarias/pypiwrap
 - https://pypi.org/project/pip-api/
 - 
+
+used by
+- [pip-qt](https://github.com/hannesdelbeke/pip-qt)https://github.com/hannesdelbeke/pip-qt
