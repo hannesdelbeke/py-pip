@@ -7,3 +7,6 @@ Features
 
 todo
 - test pip list with pre installed modules. e.g. nummpy in Blender
+
+similar
+- https://github.com/aescarias/pypiwrap 
