@@ -18,6 +18,8 @@ py_pip.install("numpy")
 ```
 
 ### similar
+Python pip wrappers, but without passing EnvPaths.
+
 - https://github.com/aescarias/pypiwrap
 - https://pypi.org/project/pip-api/
 
