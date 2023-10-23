@@ -3,6 +3,8 @@ import subprocess
 import pkgutil
 import os
 import pkg_resources  # todo replace deprecated module
+import importlib
+import logging
 
 
 default_target_path = ""
@@ -10,17 +12,29 @@ default_target_path = ""
 _cached_installed_packages = []
 
 
-def run_command(command):
-    # pass custom python paths, in case they were dynamically added
+def _prep_env() -> dict:
+    """Add custom python paths to the environment, to support dynamically added paths """
     my_env = os.environ.copy()
     joined_paths = os.pathsep.join(sys.path)
     env_var = my_env.get("PYTHONPATH")
     if env_var:
         joined_paths = f"{env_var}{os.pathsep}{joined_paths}"
     my_env["PYTHONPATH"] = joined_paths
+    return my_env
 
-    # Run the command and capture the output
-    process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, env=my_env)
+
+def run_command_process(command) -> subprocess.Popen:
+    """returns the subprocess, use to capture the output of the command while running"""
+    my_env = _prep_env()
+    return subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, env=my_env)
+
+
+def run_command(command) -> (str, str):
+    """
+    Run command and return output and error
+    Returns (stdOut, stdErr) output and error are bytes, use .decode() to convert to string
+    """
+    process = run_command_process(command)
     output, error = process.communicate()
     return output, error
 
@@ -91,16 +105,28 @@ def get_location(package_name) -> str:
         return f"Error while trying to locate package '{package_name}'."
 
 
-def install(package_name, invalidate_caches=True, target_path=None):
+def install_process(package_name: "str|List[str]", target_path: "str|pathlib.Path"=None):
     """
     target_path: path where to install module too, if default_target_path is set, use that
+    to fix possible import issues, invalidate caches after installation with 'importlib.invalidate_caches()'
     """
     command = [sys.executable, "-m", "pip", "install", package_name]
     target_path = target_path or default_target_path
     
     if target_path:
         command.extend(["--target", str(target_path)])
-    output, error = run_command(command)
+    return run_command_process(command)
+
+
+def install(package_name: "str|List[str]", invalidate_caches: bool = True, target_path: "str|pathlib.Path"=None):
+    """
+    pip install a python package
+    package_name: name of package to install (extra args can be passed in the package_name kwarg)
+    invalidate_caches: if True, invalidate importlib caches after installation
+    target_path: path where to install module too, if default_target_path is set, use that
+    """
+    process = install_process(package_name, target_path=target_path)
+    output, error = process.communicate()
 
     # TODO if editable install, we add a pth file to target path.
     # but target path might not be in site_packages, and pth might not be processed.
@@ -110,7 +136,6 @@ def install(package_name, invalidate_caches=True, target_path=None):
     #     site.removeduppaths()
 
     if invalidate_caches:
-        import importlib
         importlib.invalidate_caches()
     return output, error    
 
@@ -134,4 +159,6 @@ def uninstall(package_name, delete_module=True):
     if delete_module:
         for module_name in get_package_modules(package_name):
             if module_name in sys.modules:
+                logging.debug(f"deleting module {module_name}")
                 del sys.modules[module_name]
+    return output, error
