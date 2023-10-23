@@ -48,9 +48,11 @@ def list():
     raw = output.decode()
 
     for line in raw.split("\n")[2:-1]:  # 2-1 skips the first lines
-        name, version = line.split()[:2]  # TODO edit packages contain a 3rd value: path 
-        packages.append((name, version))
-
+        split_text = line.split()  # assumes version and package name dont contain spaces
+        if split_text:
+            name, version = split_text[:2]  # TODO edit packages contain a 3rd value: path 
+            packages.append((name, version))
+            
     global __cached_installed_packages
     __cached_installed_packages = packages
     return packages
