@@ -8,6 +8,7 @@ import logging
 
 
 default_target_path = ""
+python_interpreter = sys.executable  # can be changed externally, e.g. in Maya
 
 _cached_installed_packages = []
 
@@ -41,18 +42,18 @@ def run_command(command) -> (str, str):
 
 def list():
     """return tuple of (name, version) for each installed package"""
-    output, error = run_command([sys.executable, "-m", "pip", "list"])
+    output, error = run_command([python_interpreter, "-m", "pip", "list"])
 
     # Parse the output of the pip list command
     packages = []
     raw = output.decode()
-
+    
     for line in raw.split("\n")[2:-1]:  # 2-1 skips the first lines
         split_text = line.split()  # assumes version and package name dont contain spaces
         if split_text:
             name, version = split_text[:2]  # TODO edit packages contain a 3rd value: path 
             packages.append((name, version))
-            
+
     global __cached_installed_packages
     __cached_installed_packages = packages
     return packages
@@ -72,16 +73,7 @@ def get_version(package_name, cached=False) -> str:
         if name == package_name:
             return version
     return ""
-
-
-# def get_location(package_name) -> str:
-#     output, error = run_command([sys.executable, "-m", "pip", "show", package_name])
-#     raw = output.decode()
-#     for line in raw.split("\n"):
-#         if line.startswith("Location:"):
-#             return line.split(" ")[1]
-#     return ""
-
+    
 
 def get_location(package_name) -> str:
     # TODO cleanup
@@ -112,7 +104,7 @@ def install_process(package_name: "str|List[str]", target_path: "str|pathlib.Pat
     target_path: path where to install module too, if default_target_path is set, use that
     to fix possible import issues, invalidate caches after installation with 'importlib.invalidate_caches()'
     """
-    command = [sys.executable, "-m", "pip", "install", package_name]
+    command = [python_interpreter, "-m", "pip", "install", package_name]
     target_path = target_path or default_target_path
     
     if target_path:
@@ -156,7 +148,7 @@ def get_package_modules(package_name):
 
 
 def uninstall(package_name, delete_module=True):
-    command = [sys.executable, "-m", "pip", "uninstall", package_name]
+    command = [python_interpreter, "-m", "pip", "uninstall", package_name]
     output, error = run_command(command)
     if delete_module:
         for module_name in get_package_modules(package_name):
