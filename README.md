@@ -31,8 +31,8 @@ This might (untested) also be achievable by passing `sys.path` to `os.environ["P
 ### similar
 Python pip wrappers, but without passing EnvPaths.
 
-- https://github.com/aescarias/pypiwrap
-- https://pypi.org/project/pip-api/
+- 004⭐ https://github.com/aescarias/pypiwrap - documentation
+- 100⭐ https://pypi.org/project/pip-api/ - lacks documentation
 
 ### used by
 - [pip-qt](https://github.com/hannesdelbeke/pip-qt)
