@@ -30,7 +30,7 @@ This can result in clashes and weird bugs.
 This might (untested) also be achievable by passing `sys.path` to `os.environ["PYTHONPATH"]` and then running one of the below "similar" pip wrappers
 
 ### similar
-Python pip wrappers, but without passing EnvPaths.
+Python pip wrappers, but without passing sys paths.
 
 - 100⭐ [di/pip-api](https://github.com/di/pip-api) - local `pip.exe` wrapper, lacks documentation (passes env vars, but not sys path, see [code](https://github.com/di/pip-api/blob/master/pip_api/_call.py))
 - 004⭐ [aescarias/pypiwrap](https://github.com/aescarias/pypiwrap) - API wrapper for the PyPI website, not for local `pip.exe` [documentation](https://aescarias.github.io/pypiwrap/)
