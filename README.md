@@ -1,6 +1,6 @@
 # py-pip
-Install packages from inside Python.  
-The difference with similar solutions, py-pip passes extra python paths as env vars to pip, supporting dynamic paths for e.g. Maya, Blender, ...
+Install Python packages, from inside Python.  
+The difference with similar solutions: py-pip passes it's sys.paths to pip, to support dynamic paths for e.g. Maya, Blender, ...
 
 ### Features
 - pass env vars so pip can detect installed modules in different locations (e.g. Blender dynamicaly changes the Python path on startup)
