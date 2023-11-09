@@ -32,9 +32,9 @@ This might (untested) also be achievable by passing `sys.path` to `os.environ["P
 ### similar
 Python pip wrappers, but without passing EnvPaths.
 
-- 100⭐ https://pypi.org/project/pip-api/ - local `pip.exe` wrapper, lacks documentation (passes env vars, but not sys path, see [code](https://github.com/di/pip-api/blob/master/pip_api/_call.py))
-- 004⭐ https://github.com/aescarias/pypiwrap - API wrapper for the PyPI website, not for local `pip.exe` [documentation](https://aescarias.github.io/pypiwrap/)
-- 130⭐ https://github.com/sjkingo/virtualenv-api - local `pip.exe` wrapper, but for virtual env , nice quickstart docs on [README](https://github.com/sjkingo/virtualenv-api/blob/master/README.rst)
+- 100⭐ [di/pip-api](https://github.com/di/pip-api) - local `pip.exe` wrapper, lacks documentation (passes env vars, but not sys path, see [code](https://github.com/di/pip-api/blob/master/pip_api/_call.py))
+- 004⭐ [aescarias/pypiwrap](https://github.com/aescarias/pypiwrap) - API wrapper for the PyPI website, not for local `pip.exe` [documentation](https://aescarias.github.io/pypiwrap/)
+- 130⭐ [sjkingo/virtualenv-api](https://github.com/sjkingo/virtualenv-api) - local `pip.exe` wrapper, but for virtual env , nice quickstart docs on [README](https://github.com/sjkingo/virtualenv-api/blob/master/README.rst)
 
 ### used by
 - [pip-qt](https://github.com/hannesdelbeke/pip-qt)
