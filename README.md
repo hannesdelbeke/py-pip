@@ -33,6 +33,7 @@ Python pip wrappers, but without passing EnvPaths.
 
 - 004⭐ https://github.com/aescarias/pypiwrap - [documentation](https://aescarias.github.io/pypiwrap/)
 - 100⭐ https://pypi.org/project/pip-api/ - lacks documentation (passes env vars, but not sys path, see [code](https://github.com/di/pip-api/blob/master/pip_api/_call.py))
+- 130⭐ https://github.com/sjkingo/virtualenv-api, similar, pip api for virtual env , nice quickstart docs on [README](https://github.com/sjkingo/virtualenv-api/blob/master/README.rst)
 
 ### used by
 - [pip-qt](https://github.com/hannesdelbeke/pip-qt)
