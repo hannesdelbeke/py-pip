@@ -99,12 +99,21 @@ def get_location(package_name) -> str:
         return f"Error while trying to locate package '{package_name}'."
 
 
-def install_process(package_name: "str|List[str]", target_path: "str|pathlib.Path"=None, force=False, upgrade=False):
+def install_process(package_name: "str|List[str]"=None,
+                    target_path: "str|pathlib.Path"=None,
+                    force=False,
+                    upgrade=False,
+                    requirements=None,
+                    ):
     """
     target_path: path where to install module too, if default_target_path is set, use that
     to fix possible import issues, invalidate caches after installation with 'importlib.invalidate_caches()'
     """
-    command = [python_interpreter, "-m", "pip", "install", package_name]
+    command = [python_interpreter, "-m", "pip", "install"]
+    if package_name:
+        command.append(package_name)
+    if requirements:
+        command.extend(["-r", str(requirements)])
     if force:
         command.append("--force-reinstall")
     if upgrade:
@@ -112,18 +121,23 @@ def install_process(package_name: "str|List[str]", target_path: "str|pathlib.Pat
     target_path = target_path or default_target_path
     if target_path:
         command.extend(["--target", str(target_path)], "--no-user")
-
     return run_command_process(command)
 
 
-def install(package_name: "str|List[str]", invalidate_caches: bool = True, target_path: "str|pathlib.Path"=None):
+def install(package_name: "str|List[str]"=None,
+            invalidate_caches: bool = True,
+            target_path: "str|pathlib.Path"=None,
+            force=False,
+            upgrade=False,
+            requirements: "str|pathlib.Path"=None
+            ):
     """
     pip install a python package
     package_name: name of package to install (extra args can be passed in the package_name kwarg)
     invalidate_caches: if True, invalidate importlib caches after installation
     target_path: path where to install module too, if default_target_path is set, use that
     """
-    process = install_process(package_name, target_path=target_path)
+    process = install_process(package_name=package_name, target_path=target_path, force=force, upgrade=upgrade, requirements=requirements)
     output, error = process.communicate()
 
     # TODO if editable install, we add a pth file to target path.
