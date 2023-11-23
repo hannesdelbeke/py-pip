@@ -99,16 +99,20 @@ def get_location(package_name) -> str:
         return f"Error while trying to locate package '{package_name}'."
 
 
-def install_process(package_name: "str|List[str]", target_path: "str|pathlib.Path"=None):
+def install_process(package_name: "str|List[str]", target_path: "str|pathlib.Path"=None, force=False, upgrade=False):
     """
     target_path: path where to install module too, if default_target_path is set, use that
     to fix possible import issues, invalidate caches after installation with 'importlib.invalidate_caches()'
     """
     command = [python_interpreter, "-m", "pip", "install", package_name]
+    if force:
+        command.append("--force-reinstall")
+    if upgrade:
+        command.append("--upgrade")
     target_path = target_path or default_target_path
-    
     if target_path:
-        command.extend(["--target", str(target_path)])
+        command.extend(["--target", str(target_path)], "--no-user")
+
     return run_command_process(command)
 
 
