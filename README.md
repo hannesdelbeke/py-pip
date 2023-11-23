@@ -12,7 +12,11 @@ The difference with similar solutions: py-pip passes it's sys.paths to pip, to s
 ```python
 import py_pip
 
-# print all commands
+# optional
+py_pip.default_target_path = "C:/path/to/site-packages"  # defaults to no target path
+py_pip.python_interpreter = "C:/path/to/python.exe"  # defaults to sys.executable
+
+# print all py_pip commands
 [print(x) for x in dir(py_pip)]
 
 # install numpy
