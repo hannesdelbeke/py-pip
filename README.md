@@ -24,7 +24,7 @@ py_pip.install("numpy")
 ```
 
 ### use case
-Blender doesn't has an external Python interpreter.   
+Blender doesn't has an external Python interpreter that sets up the Blender environment (Maya has `mayapy.exe`).   
 To use pip and have it correctly detect the installed modules:
 - you need to run it from inside Blender.
 - or recreate the environment, with same Python version and Python paths.
