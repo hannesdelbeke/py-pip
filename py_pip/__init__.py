@@ -104,6 +104,7 @@ def install_process(package_name: "str|List[str]"=None,
                     force=False,
                     upgrade=False,
                     requirements=None,
+                    options=None,
                     ):
     """
     target_path: path where to install module too, if default_target_path is set, use that
@@ -121,6 +122,8 @@ def install_process(package_name: "str|List[str]"=None,
     target_path = target_path or default_target_path
     if target_path:
         command.extend(["--target", str(target_path), "--no-user"])
+    if options:
+        command.extend(options)
     return run_command_process(command)
 
 
@@ -129,7 +132,8 @@ def install(package_name: "str|List[str]"=None,
             target_path: "str|pathlib.Path"=None,
             force=False,
             upgrade=False,
-            requirements: "str|pathlib.Path"=None
+            requirements: "str|pathlib.Path"=None,
+            options=None,  # list[str] extra options to pass to pip install, e.g. ["--editable"]
             ):
     """
     pip install a python package
@@ -137,7 +141,7 @@ def install(package_name: "str|List[str]"=None,
     invalidate_caches: if True, invalidate importlib caches after installation
     target_path: path where to install module too, if default_target_path is set, use that
     """
-    process = install_process(package_name=package_name, target_path=target_path, force=force, upgrade=upgrade, requirements=requirements)
+    process = install_process(package_name=package_name, target_path=target_path, force=force, upgrade=upgrade, requirements=requirements, options=options)
     output, error = process.communicate()
 
     # TODO if editable install, we add a pth file to target path.
