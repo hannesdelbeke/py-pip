@@ -1,4 +1,5 @@
-# py-pip
+# py-pip ![PyPI - Version](https://img.shields.io/pypi/v/py-pip)
+
 Install Python packages, from inside Python.  
   
 The difference with similar solutions: py-pip passes it's sys.paths to pip, to support dynamicly added paths for e.g. Maya, Blender, ...  
