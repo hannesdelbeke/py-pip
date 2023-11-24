@@ -120,7 +120,7 @@ def install_process(package_name: "str|List[str]"=None,
         command.append("--upgrade")
     target_path = target_path or default_target_path
     if target_path:
-        command.extend(["--target", str(target_path)], "--no-user")
+        command.extend(["--target", str(target_path), "--no-user"])
     return run_command_process(command)
 
 
