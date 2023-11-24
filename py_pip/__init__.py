@@ -5,6 +5,7 @@ import os
 import pkg_resources  # todo replace deprecated module
 import importlib
 import logging
+from pathlib import Path
 
 
 default_target_path = ""
@@ -160,16 +161,27 @@ def get_package_modules(package_name):
     # Get a list of modules that belong to the specified package
     package_modules = []
     package_loader = pkgutil.get_loader(package_name)
+    file_name = package_loader.get_filename()  # e.g. "C:\Users\hanne\AppData\Roaming\Blender Foundation\Blender\3.2\scripts\addons\modules\plugget\__init__.py"
+    if not Path(file_name).is_dir():  # todo test with a .py file instead of package
+        file_name = str(Path(file_name).parent)  # # e.g. "C:\Users\hanne\AppData\Roaming\Blender Foundation\Blender\3.2\scripts\addons\modules\plugget"
 
     if package_loader is not None:
-        for _, module_name, _ in pkgutil.walk_packages(package_loader.get_filename()):
+        for _, module_name, _ in pkgutil.walk_packages([file_name]):
             full_module_name = f"{package_name}.{module_name}"
             package_modules.append(full_module_name)
 
     return package_modules
 
 
-def uninstall(package_name=None, delete_module=True, yes=True, requirements=None):  # dependencies=False
+def unimport_modules(package_name):
+    """unload any package's imported modules from memory"""
+    for module_name in get_package_modules(package_name):
+        if module_name in sys.modules:
+            logging.debug(f"deleting module {module_name}")
+            del sys.modules[module_name]
+
+
+def uninstall(package_name=None, unimport=True, yes=True, requirements=None):  # dependencies=False
     """
     custom kwargs
     delete_module: if True, delete the module from sys.modules, it's the opposite of importing the module
@@ -188,10 +200,7 @@ def uninstall(package_name=None, delete_module=True, yes=True, requirements=None
         command.extend(["-r", str(requirements)])
     output, error = run_command(command)
 
-    if delete_module:
-        for module_name in get_package_modules(package_name):
-            if module_name in sys.modules:
-                logging.debug(f"deleting module {module_name}")
-                del sys.modules[module_name]
+    if unimport:
+        unimport_modules(package_name)
 
     return output, error
