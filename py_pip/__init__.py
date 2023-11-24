@@ -165,13 +165,23 @@ def get_package_modules(package_name):
     return package_modules
 
 
-def uninstall(package_name, delete_module=True):  # dependencies=False
+def uninstall(package_name=None, delete_module=True, yes=True, requirements=None):  # dependencies=False
     """
+    custom kwargs
     delete_module: if True, delete the module from sys.modules, it's the opposite of importing the module
+
+    pip kwargs
+    yes: if True, Don’t ask for confirmation of uninstall deletions
     """
     # todo uninstall dependencies
 
-    command = [python_interpreter, "-m", "pip", "uninstall", package_name]
+    command = [python_interpreter, "-m", "pip", "uninstall"]
+    if package_name:
+        command.append(package_name)
+    if yes:
+        command.append("-y")
+    if requirements:
+        command.extend(["-r", str(requirements)])
     output, error = run_command(command)
 
     if delete_module:
