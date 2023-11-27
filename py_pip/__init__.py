@@ -128,8 +128,6 @@ def install_process(package_name: "str|List[str]"=None,
     return run_command_process(command)
 
 
-def _handle_new_lines():
-
 def _print_error(error, package_name=None):
     if error:
         logging.error(f"There was an install error for package '{package_name}'")
