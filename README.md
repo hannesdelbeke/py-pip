@@ -17,11 +17,9 @@ import py_pip
 py_pip.default_target_path = "C:/path/to/site-packages"  # defaults to no target path
 py_pip.python_interpreter = "C:/path/to/python.exe"  # defaults to sys.executable
 
-# print all py_pip commands
-[print(x) for x in dir(py_pip)]
-
-# install numpy
-py_pip.install("numpy")
+# the core commands
+py_pip.install("dummy_test")  # install dummy_test
+py_pip.uninstall("dummy_test")  # uninstall the dummy_test package
 ```
 
 ### use case
