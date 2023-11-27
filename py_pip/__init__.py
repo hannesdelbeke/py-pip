@@ -128,6 +128,16 @@ def install_process(package_name: "str|List[str]"=None,
     return run_command_process(command)
 
 
+def _print_error(error):
+    if error:
+        logging.error(f"There was an install error for package '{package_name}'")
+        try:
+            logging.error(error.decode())
+        except Exception as e:
+            logging.error("failed to decode subprocess error", e)
+            logging.error(error)
+
+
 def install(package_name: "str|List[str]"=None,
             invalidate_caches: bool = True,
             target_path: "str|pathlib.Path"=None,
@@ -144,6 +154,7 @@ def install(package_name: "str|List[str]"=None,
     """
     process = install_process(package_name=package_name, target_path=target_path, force=force, upgrade=upgrade, requirements=requirements, options=options)
     output, error = process.communicate()
+    _print_error(error)
 
     # TODO if editable install, we add a pth file to target path.
     # but target path might not be in site_packages, and pth might not be processed.
