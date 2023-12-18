@@ -6,7 +6,8 @@ The difference with similar solutions: py-pip passes it's sys.paths to pip, to s
 (Otherwise any python paths added after startup wont be detected by pip, so it can't uninstall certain installed packages, or it might install an already installed package)  
 
 ### Features
-- pass env vars so pip can detect installed modules in different locations (e.g. Blender dynamicaly changes the Python path on startup)
+- pass env vars so pip can detect installed modules in different locations (e.g. Blender dynamicaly changes the Python path on startup)  
+  & handle env vars, to prevent non sys.path paths being passed.
 - use pip from within Python, using the active interpreter
 
 ### Instructions
