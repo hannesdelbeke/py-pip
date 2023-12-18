@@ -27,6 +27,9 @@ def _prep_env() -> dict:
         if key in my_env:
             del my_env[key]
 
+    # prevent pip from using the user site
+    my_env["PYTHONNOUSERSITE"] = "1"
+
     return my_env
 
 
