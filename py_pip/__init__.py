@@ -84,28 +84,27 @@ def get_version(package_name, cached=False) -> str:
     return ""
     
 
-def get_location(package_name) -> str:
-    # TODO cleanup
-    def find_package_location(package_name):
+def get_location(package_name: str) -> "str|None":
+
+    # todo cleanup
+    def find_package_location(name: str) -> "str|None":
         try:
-            distribution = pkg_resources.get_distribution(package_name)
+            distribution = pkg_resources.get_distribution(name)
             return distribution.location
         except pkg_resources.DistributionNotFound:
-            return f"Package '{package_name}' not found."
-        
+            logging.warning(f"Package '{name}' not found.")
+            return None
+
     try:
         loader = pkgutil.get_loader(package_name)
         if loader is not None:
             package_location = os.path.dirname(loader.get_filename())
             return package_location
         else:
-            loc = find_package_location(package_name)
-            if loc:
-                return loc
-            else:
-                return f"Package '{package_name}' not found."
-    except ImportError:
-        return f"Error while trying to locate package '{package_name}'."
+            return find_package_location(package_name)
+    except ImportError as e:
+        logging.error(f"Error while trying to locate package '{package_name}'. Error: {e}")
+        return None
 
 
 def install_process(package_name: "str|List[str]"=None,
