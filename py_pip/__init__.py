@@ -17,8 +17,10 @@ _cached_installed_packages = []
 def _prep_env() -> dict:
     """Add custom python paths to the environment, to support dynamically added paths """
     my_env = os.environ.copy()
-    joined_paths = os.pathsep.join(sys.path)  # get all python paths
-    my_env["PYTHONPATH"] = joined_paths  # overwrite PYTHONPATH with all python paths, to avoid paths not in sys.path
+
+    # avoid paths not in sys.path passed to pip,
+    # e.g. paths set in PYTHONPATH, are ignored in apps like Blender. So shouldn't be passed to pip
+    my_env["PYTHONPATH"] = os.pathsep.join(sys.path)
 
     # clear paths, to avoid passing external python modules to pip
     for key in ["PATH", "PYTHONHOME", "PYTHONUSERBASE"]:
