@@ -1,6 +1,6 @@
 # py-pip ![PyPI - Version](https://img.shields.io/pypi/v/py-pip)
 
-Install Python packages, from inside Python.  
+Install Python packages, from inside a Python environment. e.g. to install packages in Blender, Maya, Max, ...   
   
 The difference with similar solutions: py-pip passes it's sys.paths to pip, to support dynamicly added paths for e.g. Maya, Blender, ...  
 (Otherwise any python paths added after startup wont be detected by pip, so it can't uninstall certain installed packages, or it might install an already installed package)  
