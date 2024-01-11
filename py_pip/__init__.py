@@ -181,6 +181,9 @@ def get_package_modules(package_name):
     # Get a list of modules that belong to the specified package
     package_modules = []
     package_loader = pkgutil.get_loader(package_name)
+    if not package_loader:
+        logging.error(f"Package '{package_name}' not found.")
+        return package_modules
     file_name = package_loader.get_filename()  # e.g. "C:\Users\hanne\AppData\Roaming\Blender Foundation\Blender\3.2\scripts\addons\modules\plugget\__init__.py"
     if not Path(file_name).is_dir():  # todo test with a .py file instead of package
         file_name = str(Path(file_name).parent)  # # e.g. "C:\Users\hanne\AppData\Roaming\Blender Foundation\Blender\3.2\scripts\addons\modules\plugget"
