@@ -26,6 +26,15 @@ def _prep_env() -> dict:
     for key in ["PATH", "PYTHONHOME", "PYTHONUSERBASE"]:
         if key in my_env:
             del my_env[key]
+    
+    # add git path back
+    str_paths = os.environ.get("PATH", "")
+    paths = str_paths.split(os.pathsep)
+    git_paths = [p for p in paths if "git" in p.lower()]  # todo make less HACKY, since we just check if git is in the path
+    if git_paths:
+        my_env["PATH"] = os.pathsep.join(git_paths)
+    else:
+        logging.warning("py_pip couldn't detect git in PATH, ensure a folder in PATH contains the name 'git'")
 
     # prevent pip from using the user site
     my_env["PYTHONNOUSERSITE"] = "1"
