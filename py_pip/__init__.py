@@ -36,6 +36,7 @@ def _prep_env() -> dict:
 def run_command_process(command) -> subprocess.Popen:
     """returns the subprocess, use to capture the output of the command while running"""
     my_env = _prep_env()
+    print(F"run_command_process command: {command}")
     return subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, env=my_env)
 
 
@@ -137,7 +138,12 @@ def install_process(package_name: "str|List[str]"=None,
 
 def _print_error(error, package_name=None):
     if error:
-        logging.error(f"There was an install error for package '{package_name}'")
+        if package_name:  # can be none if we e.g. install from requirements, so there's no package
+            msg = f"There was an install error for package '{package_name}'"
+        else:
+            msg = "There was an install error"
+        logging.error(msg)
+
         try:
             txt = error.decode()
             for line in txt.splitlines():
@@ -181,9 +187,6 @@ def get_package_modules(package_name):
     # Get a list of modules that belong to the specified package
     package_modules = []
     package_loader = pkgutil.get_loader(package_name)
-    if not package_loader:
-        logging.error(f"Package '{package_name}' not found.")
-        return package_modules
     file_name = package_loader.get_filename()  # e.g. "C:\Users\hanne\AppData\Roaming\Blender Foundation\Blender\3.2\scripts\addons\modules\plugget\__init__.py"
     if not Path(file_name).is_dir():  # todo test with a .py file instead of package
         file_name = str(Path(file_name).parent)  # # e.g. "C:\Users\hanne\AppData\Roaming\Blender Foundation\Blender\3.2\scripts\addons\modules\plugget"
@@ -223,7 +226,11 @@ def uninstall(package_name=None, unimport=True, yes=True, requirements=None):  #
         command.extend(["-r", str(requirements)])
     output, error = run_command(command)
 
-    if unimport:
-        unimport_modules(package_name)
+    # todo add unimport support if we uninstall from requirements
+    try:
+        if unimport: 
+            unimport_modules(package_name)
+    except Exception as e:
+        logging.warning(f"unimport failed: {e}")
 
     return output, error
