@@ -39,7 +39,7 @@ Existing Python pip wrappers, without handling sys paths by default:
 - 100⭐ [di/pip-api](https://github.com/di/pip-api) - local `pip.exe` wrapper, lacks documentation (passes env vars, but not sys path, see [code](https://github.com/di/pip-api/blob/master/pip_api/_call.py))
 - 004⭐ [aescarias/pypiwrap](https://github.com/aescarias/pypiwrap) - API wrapper for the PyPI website, not for local `pip.exe` [documentation](https://aescarias.github.io/pypiwrap/)
 - 130⭐ [sjkingo/virtualenv-api](https://github.com/sjkingo/virtualenv-api) - local `pip.exe` wrapper, but for virtual env , nice quickstart docs on [README](https://github.com/sjkingo/virtualenv-api/blob/master/README.rst)
-- 7k⭐ [pypa/pipx](https://github.com/pypa/pipx) TODO investigate
+- 7k⭐ [pypa/pipx](https://github.com/pypa/pipx) pip wrapper meant for commandline python apps. not really usefull for our use case.
 - TODO add support for pip auto remove - remove unused dependencies https://github.com/invl/pip-autoremove (does this use it s own uninstall, or can we get a list and use py-pip uninstall)
 
 ### used by
