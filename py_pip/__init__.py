@@ -180,6 +180,12 @@ def install(package_name: "str|List[str]"=None,
     output, error = process.communicate()
     _print_error(error, package_name=package_name)
 
+    # exception on fail, TODO test if this doesn't trigger warnings, e.g. a pip version is outdated warning
+    return_code = process.returncode
+    if return_code != 0:
+        # Treat non-zero return code as a package installation failure
+        raise RuntimeError(f"Package installation failed with return code {return_code}: {error}")
+        
     # TODO if editable install, we add a pth file to target path.
     # but target path might not be in site_packages, and pth might not be processed.
     # if target_path:
