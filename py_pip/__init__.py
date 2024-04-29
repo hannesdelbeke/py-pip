@@ -22,19 +22,23 @@ def _prep_env() -> dict:
     # e.g. paths set in PYTHONPATH, are ignored in apps like Blender. So shouldn't be passed to pip
     my_env["PYTHONPATH"] = os.pathsep.join(sys.path)
 
+    # find git in our path and keep that
+    git_path = None
+    for folder in my_env["PATH"].split(os.pathsep):
+        if (Path(folder) / "git.exe").exists():
+            git_path = folder
+            break
+
     # clear paths, to avoid passing external python modules to pip
     for key in ["PATH", "PYTHONHOME", "PYTHONUSERBASE"]:
         if key in my_env:
             del my_env[key]
-    
-    # add git path back
-    str_paths = os.environ.get("PATH", "")
-    paths = str_paths.split(os.pathsep)
-    git_paths = [p for p in paths if "git" in p.lower()]  # todo make less HACKY, since we just check if git is in the path
-    if git_paths:
-        my_env["PATH"] = os.pathsep.join(git_paths)
+
+    # add git_path back to PATH
+    if git_path:
+        my_env["PATH"] = git_path + os.pathsep + my_env.get("PATH", "")
     else:
-        logging.warning("py_pip couldn't detect git in PATH, ensure a folder in PATH contains the name 'git'")
+        logging.warning("git not found in PATH, installing git dependencies might fail.")
 
     # prevent pip from using the user site
     my_env["PYTHONNOUSERSITE"] = "1"
