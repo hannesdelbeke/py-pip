@@ -46,3 +46,4 @@ Existing Python pip wrappers, without handling sys paths by default:
 
 ### used by
 - [pip-qt](https://github.com/hannesdelbeke/pip-qt)
+- [plugget](https://github.com/plugget/plugget)
