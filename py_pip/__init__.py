@@ -150,21 +150,28 @@ def install_process(package_name: "str|List[str]"=None,
 
 
 def _print_error(error, package_name=None):
-    if error:
-        if package_name:  # can be none if we e.g. install from requirements, so there's no package
-            msg = f"There was an install error for package '{package_name}'"
-        else:
-            msg = "There was an install error"
-        logging.error(msg)
+    if not error:
+        return
 
-        try:
-            txt = error.decode()
-            for line in txt.splitlines():
-                logging.error(line)
-        except Exception as e:
-            logging.error("failed to decode subprocess error", e)
-            logging.error(error)
+    try:
+        txt = error.decode()
+        raw_lines = txt.splitlines()
+        # remove empty lines
+        lines = [line for line in raw_lines if line.strip()]
+        first_line = lines[0].strip()
 
+        # subprocess writes the command run as an error, let's avoid this false error
+        if len(lines) <= 1 and first_line.startswith("Running command"):
+            # print(first_line)
+            return
+
+        logging.error(f"There was an install error for package '{package_name}'")
+        for line in raw_lines:
+            logging.error(line)
+    except Exception as e:
+        logging.error("failed to decode subprocess error", e)
+        logging.error(error)
+        
 
 def install(package_name: "str|List[str]"=None,
             invalidate_caches: bool = True,
