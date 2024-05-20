@@ -7,7 +7,6 @@ import importlib
 import logging
 from pathlib import Path
 
-
 default_target_path = ""
 python_interpreter = sys.executable  # can be changed externally, e.g. in Maya
 
@@ -78,11 +77,11 @@ def list():
     # Parse the output of the pip list command
     packages = []
     raw = output.decode()
-    
+
     for line in raw.split("\n")[2:-1]:  # 2-1 skips the first lines
         split_text = line.split()  # assumes version and package name dont contain spaces
         if split_text:
-            name, version = split_text[:2]  # TODO edit packages contain a 3rd value: path 
+            name, version = split_text[:2]  # TODO edit packages contain a 3rd value: path
             packages.append((name, version))
 
     global __cached_installed_packages
@@ -104,7 +103,6 @@ def get_version(package_name, cached=False) -> str:
         if name == package_name:
             return version
     return ""
-    
 
 
 def get_location(package_name: str) -> "str|None":
@@ -129,8 +127,8 @@ def get_location(package_name: str) -> "str|None":
         return None
 
 
-def install_process(package_name: "str|List[str]"=None,
-                    target_path: "str|pathlib.Path"=None,
+def install_process(package_name: "str|List[str]" = None,
+                    target_path: "str|pathlib.Path" = None,
                     force=False,
                     upgrade=False,
                     requirements=None,
@@ -179,14 +177,14 @@ def _print_error(error, package_name=None):
     except Exception as e:
         logging.error("failed to decode subprocess error", e)
         logging.error(error)
-        
 
-def install(package_name: "str|List[str]"=None,
+
+def install(package_name: "str|List[str]" = None,
             invalidate_caches: bool = True,
-            target_path: "str|pathlib.Path"=None,
+            target_path: "str|pathlib.Path" = None,
             force=False,
             upgrade=False,
-            requirements: "str|pathlib.Path"=None,
+            requirements: "str|pathlib.Path" = None,
             options=None,  # list[str] extra options to pass to pip install, e.g. ["--editable"]
             ):
     """
@@ -204,7 +202,7 @@ def install(package_name: "str|List[str]"=None,
     if return_code != 0:
         # Treat non-zero return code as a package installation failure
         raise RuntimeError(f"Package installation failed with return code {return_code}: {error}")
-        
+
     # TODO if editable install, we add a pth file to target path.
     # but target path might not be in site_packages, and pth might not be processed.
     # if target_path:
@@ -214,7 +212,7 @@ def install(package_name: "str|List[str]"=None,
 
     if invalidate_caches:
         importlib.invalidate_caches()
-    return output, error    
+    return output, error
 
 
 def get_package_modules(package_name):
@@ -262,7 +260,7 @@ def uninstall(package_name=None, unimport=True, yes=True, requirements=None):  #
 
     # todo add unimport support if we uninstall from requirements
     try:
-        if unimport: 
+        if unimport:
             unimport_modules(package_name)
     except Exception as e:
         logging.warning(f"unimport failed: {e}")
