@@ -53,13 +53,21 @@ def run_command_process(command) -> subprocess.Popen:
     return subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, env=my_env)
 
 
-def run_command(command) -> (str, str):
+def run_command(command, timeout=-1) -> (str, str):
     """
     Run command and return output and error
     Returns (stdOut, stdErr) output and error are bytes, use .decode() to convert to string
     """
     process = run_command_process(command)
-    output, error = process.communicate()
+    if timeout == -1:  # skip
+        output, error = process.communicate()
+    else:
+        try:
+            output, error = process.communicate(timeout=timeout)
+        except subprocess.TimeoutExpired:
+            logging.warning(f"Timeout expired for command: {command}")
+            process.kill()
+            output, error = process.communicate()
     return output, error
 
 
