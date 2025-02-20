@@ -1,9 +1,20 @@
 # py-pip ![PyPI - Version](https://img.shields.io/pypi/v/py-pip)
 
-Install Python packages, from inside a Python environment. e.g. in Blender, Maya, Max, ...   
+Install Python packages from inside a Python environment. e.g. in Blender, Maya, Max, ...   
   
-The difference with similar solutions: py-pip passes it's sys.paths to pip, to support dynamicly added paths for e.g. Maya, Blender, ...  
-(Otherwise any python paths added after startup wont be detected by pip, so it can't uninstall certain installed packages, or it might install an already installed package)  
+The difference with existing solutions, py-pip solves an issue with the environment:  
+> Blender ships with various python packages pre-installed in it's `python\lib` folder.  
+> But pip is not aware of these, e.g. the `venv` package ships with Blender, but when running `pip show venv` it doesn't detect it.  
+> Also, any python paths added after Blender startup won't be detected by pip.  
+> If pip can't detect installed packages, it can result in packages being installed twice.
+
+py-pip passes it's `sys.paths` to pip, which enables support for dynamicly added paths.
+
+### used by
+py-pip is designed as an API to be used by other python modules. some examples:
+- [pip-qt](https://github.com/hannesdelbeke/pip-qt)
+- [plugget](https://github.com/plugget/plugget)
+
 
 ### Features
 - pass env vars so pip can detect installed modules in different locations (e.g. Blender dynamicaly changes the Python path on startup)  
@@ -44,6 +55,3 @@ Existing Python pip wrappers, without handling sys paths by default:
 ### TODO
 - add support for pip auto remove - remove unused dependencies https://github.com/invl/pip-autoremove (does this use it s own uninstall, or can we get a list and use py-pip uninstall)
 
-### used by
-- [pip-qt](https://github.com/hannesdelbeke/pip-qt)
-- [plugget](https://github.com/plugget/plugget)
