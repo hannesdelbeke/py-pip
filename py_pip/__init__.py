@@ -166,13 +166,22 @@ def _print_error(error, package_name=None):
         lines = [line for line in raw_lines if line.strip()]
         first_line = lines[0].strip()
 
+        # check if we don't just have a pip upgrade error, like this:
+        # LogPython: Error: ERROR:root:There was an install error for package 'py_pip'
+        # LogPython: Error: ERROR:root:
+        # LogPython: Error: ERROR:root:[notice] A new release of pip is available: 24.0 -> 25.1.1
+        # LogPython: Error: ERROR:root:[notice] To update, run: C:\Program Files\Epic Games\UE_5.6\Engine\Binaries\ThirdParty\Python3\Win64\python.exe -m pip install --upgrade pip
+        if len(lines) == 2 and "A new release of pip is available" in lines[0] and "To update, run:" in lines[1]:
+            return
+
         # subprocess writes the command run as an error, let's avoid this false error
         if len(lines) <= 1 and first_line.startswith("Running command"):
             # print(first_line)
             return
 
         logging.error(f"There was an install error for package '{package_name}'")
-        for line in raw_lines:
+
+        for line in lines:
             logging.error(line)
     except Exception as e:
         logging.error("failed to decode subprocess error", e)
