@@ -73,17 +73,26 @@ def run_command(command, timeout=-1) -> (str, str):
 def list():
     """return tuple of (name, version) for each installed package
     e.g. [('requests', '2.25.1'), ('numpy', '1.20.0')]"""
-    output, error = run_command([python_interpreter, "-m", "pip", "list"])
 
-    # Parse the output of the pip list command
+    from importlib.metadata import distributions
+
     packages = []
-    raw = output.decode()
+    for dist in distributions():
+        name = dist.metadata["Name"]
+        version = dist.version
+        packages.append((name, version))
 
-    for line in raw.split("\n")[2:-1]:  # 2-1 skips the first lines
-        split_text = line.split()  # assumes version and package name dont contain spaces
-        if split_text:
-            name, version = split_text[:2]  # TODO edit packages contain a 3rd value: path
-            packages.append((name, version))
+    # output, error = run_command([python_interpreter, "-m", "pip", "list"])
+
+    # # Parse the output of the pip list command
+    # packages = []
+    # raw = output.decode()
+
+    # for line in raw.split("\n")[2:-1]:  # 2-1 skips the first lines
+    #     split_text = line.split()  # assumes version and package name dont contain spaces
+    #     if split_text:
+    #         name, version = split_text[:2]  # TODO edit packages contain a 3rd value: path
+    #         packages.append((name, version))
 
     global __cached_installed_packages
     __cached_installed_packages = packages
@@ -271,7 +280,8 @@ def get_package_modules(package_name):
     package_loader = pkgutil.get_loader(package_name)
     file_name = package_loader.get_filename()  # e.g. "C:\Users\hanne\AppData\Roaming\Blender Foundation\Blender\3.2\scripts\addons\modules\plugget\__init__.py"
     if not Path(file_name).is_dir():  # todo test with a .py file instead of package
-        file_name = str(Path(file_name).parent)  # # e.g. "C:\Users\hanne\AppData\Roaming\Blender Foundation\Blender\3.2\scripts\addons\modules\plugget"
+        file_name = str(Path(
+            file_name).parent)  # # e.g. "C:\Users\hanne\AppData\Roaming\Blender Foundation\Blender\3.2\scripts\addons\modules\plugget"
 
     if package_loader is not None:
         for _, module_name, _ in pkgutil.walk_packages([file_name]):
