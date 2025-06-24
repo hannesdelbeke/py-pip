@@ -71,7 +71,8 @@ def run_command(command, timeout=-1) -> (str, str):
 
 
 def list():
-    """return tuple of (name, version) for each installed package"""
+    """return tuple of (name, version) for each installed package
+    e.g. [('requests', '2.25.1'), ('numpy', '1.20.0')]"""
     output, error = run_command([python_interpreter, "-m", "pip", "list"])
 
     # Parse the output of the pip list command
