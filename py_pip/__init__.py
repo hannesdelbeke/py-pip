@@ -186,6 +186,7 @@ def install(package_name: "str|List[str]" = None,
             upgrade=False,
             requirements: "str|pathlib.Path" = None,
             options=None,  # list[str] extra options to pass to pip install, e.g. ["--editable"]
+            add_to_path=True,  # if True, add target_path to sys.path after installation
             ):
     """
     pip install a python package
@@ -212,6 +213,18 @@ def install(package_name: "str|List[str]" = None,
 
     if invalidate_caches:
         importlib.invalidate_caches()
+
+    # check if target_path and default path are in sys.path
+    # many apps don't add the path if the folder doesn't exist, e.g. on a fresh install
+    # adding it to the sys.path allows importing without restarting the app
+    if add_to_path:
+        if target_path and str(target_path) not in sys.path:
+            sys.path.append(str(target_path))
+            logging.debug(f"Added target path to sys.path: {target_path}")
+        if default_target_path and str(default_target_path) not in sys.path:
+            sys.path.append(str(default_target_path))
+            logging.debug(f"Added default target path to sys.path: {default_target_path}")
+
     return output, error
 
 
